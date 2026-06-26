@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Candidates from "./pages/Candidates";
 import CandidateProfile from "./pages/CandidateProfile";
-import Home from "./pages/Home";
 
 function App() {
   return (
@@ -12,6 +12,11 @@ function App() {
 
         <Route
           path="/"
+          element={<Home />}
+        />
+
+        <Route
+          path="/register"
           element={<Register />}
         />
 
@@ -24,10 +29,6 @@ function App() {
           path="/candidate/:id"
           element={<CandidateProfile />}
         />
-
-        <Route 
-          path="/" 
-          element={<Home/>}/>
 
       </Routes>
     </BrowserRouter>

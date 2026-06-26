@@ -1,0 +1,83 @@
+/* Navbar */
+
+.navbar{
+    position:fixed;
+    top:0;
+    left:0;
+
+    width:100%;
+    height:80px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:0 70px;
+
+    background:rgba(0,0,0,0.45);
+    backdrop-filter:blur(10px);
+
+    z-index:1000;
+}
+
+.navbar-logo h2{
+
+    color:#D4AF37;
+
+    font-size:30px;
+
+    letter-spacing:2px;
+
+    cursor:pointer;
+}
+
+.navbar-links{
+
+    display:flex;
+
+    gap:45px;
+
+    list-style:none;
+}
+
+.navbar-links a{
+
+    color:white;
+
+    text-decoration:none;
+
+    font-size:18px;
+
+    transition:.3s;
+}
+
+.navbar-links a:hover{
+
+    color:#D4AF37;
+}
+
+.login-btn{
+
+    padding:12px 28px;
+
+    background:transparent;
+
+    color:#D4AF37;
+
+    border:2px solid #D4AF37;
+
+    border-radius:8px;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+.login-btn:hover{
+
+    background:#D4AF37;
+
+    color:#111;
+}
