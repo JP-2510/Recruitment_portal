@@ -1,35 +1,48 @@
-import "../styles/Hero.css";
-import heroImage from "../assets/hero.png";
+import "../styles/hero.css";
+import logo from "../assets/logo.png";
 
 function Hero() {
   return (
-    <section
-      className="hero"
-      style={{ backgroundImage: `url(${heroImage})` }}
-    >
-      <div className="overlay">
+    <section className="hero">
 
-        <div className="hero-content">
+      <div className="background-glow"></div>
 
-          <h1>Roobaroo Recruitment Portal</h1>
+      <img
+        src={logo}
+        alt="Roobaroo"
+        className="watermark-logo"
+      />
 
-          <p>
-            Join MANIT's Cultural Society
-            <br />
-            and showcase your talent.
-          </p>
+      <div className="hero-content">
 
-          <div className="hero-buttons">
+        <img
+          src={logo}
+          alt="Roobaroo Logo"
+          className="hero-logo"
+        />
 
-            <button className="register-btn">
-              Candidate Registration
-            </button>
+        <span className="tag">
+          MANIT Bhopal Cultural Society
+        </span>
 
-            <button className="login-btn">
-              Member Login
-            </button>
+        <h1>Roobaroo</h1>
 
-          </div>
+        <h2>Recruitment Portal 2026</h2>
+
+        <p>
+          Discover your talent.
+          Perform. Create. Lead.
+        </p>
+
+        <div className="hero-buttons">
+
+          <button className="register-btn">
+            Candidate Registration
+          </button>
+
+          <button className="member-btn">
+            Member Login
+          </button>
 
         </div>
 

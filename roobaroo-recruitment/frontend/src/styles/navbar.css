@@ -14,10 +14,10 @@
 
     padding:0 70px;
 
-    background:rgba(0,0,0,0.45);
-    backdrop-filter:blur(10px);
+    background:rgba(0,0,0,0.25);
+    backdrop-filter:blur(12px);
 
-    z-index:1000;
+    z-index:999;
 }
 
 .navbar-logo h2{

@@ -1,26 +1,20 @@
-.hero {
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-    height:100vh;
+body{
+    font-family:'Outfit',sans-serif;
+    background:#090909;
+    overflow-x:hidden;
+}
 
-    padding-top:80px;
-
-    background-size:cover;
-
-    background-position:center;
-
-    background-repeat:no-repeat;
+.hero{
 
     position:relative;
 
-
-}
-
-.overlay{
-
-    width:100%;
-    height:100%;
-
-    background:rgba(0,0,0,0.72);
+    min-height:100vh;
 
     display:flex;
 
@@ -28,36 +22,111 @@
 
     align-items:center;
 
+    background:#090909;
+
+    overflow:hidden;
+
+    padding:120px 20px 40px;
 }
+
+/* Golden glow */
+
+.background-glow{
+
+    position:absolute;
+
+    width:650px;
+
+    height:650px;
+
+    border-radius:50%;
+
+    background:radial-gradient(circle,
+    rgba(212,175,55,.28),
+    transparent 70%);
+
+    filter:blur(70px);
+
+    z-index:0;
+}
+
+/* Watermark */
+
+.watermark-logo{
+
+    position:absolute;
+
+    width:750px;
+
+    opacity:.04;
+
+    z-index:1;
+}
+
+/* Main content */
 
 .hero-content{
 
+    position:relative;
+
+    z-index:10;
+
     text-align:center;
 
-    color:white;
-
+    max-width:800px;
 }
 
-.hero-content h1{
+.hero-logo{
 
-    font-size:4rem;
+    width:260px;
+
+    margin-bottom:30px;
+
+    filter:drop-shadow(0 0 25px rgba(212,175,55,.35));
+}
+
+.tag{
 
     color:#D4AF37;
 
-    margin-bottom:20px;
+    letter-spacing:5px;
 
+    font-size:15px;
 }
 
-.hero-content p{
+.hero h1{
 
-    font-size:1.4rem;
+    margin-top:15px;
+
+    color:white;
+
+    font-size:72px;
+
+    font-weight:700;
+}
+
+.hero h2{
+
+    color:#D4AF37;
+
+    font-weight:400;
+
+    margin-top:12px;
+
+    font-size:34px;
+}
+
+.hero p{
+
+    color:#d7d7d7;
+
+    font-size:22px;
+
+    margin-top:35px;
 
     line-height:1.8;
 
-    color:#F5F5F5;
-
-    margin-bottom:40px;
-
+    margin-bottom:50px;
 }
 
 .hero-buttons{
@@ -68,60 +137,86 @@
 
     gap:25px;
 
+    flex-wrap:wrap;
+}
+
+.register-btn,
+.member-btn{
+
+    width:260px;
+
+    height:60px;
+
+    border-radius:40px;
+
+    font-size:18px;
+
+    cursor:pointer;
+
+    transition:.3s;
 }
 
 .register-btn{
 
-    background:#D4AF37;
-
-    color:black;
-
     border:none;
 
-    padding:15px 35px;
+    background:#D4AF37;
 
-    border-radius:8px;
+    color:#111;
 
-    font-size:18px;
+    font-weight:600;
 
-    cursor:pointer;
-
-    transition:.3s;
-
+    box-shadow:0 0 25px rgba(212,175,55,.35);
 }
 
-.register-btn:hover{
+.member-btn{
 
-    transform:translateY(-4px);
-
-    background:#e7c44b;
-
-}
-
-.login-btn{
+    border:2px solid #D4AF37;
 
     background:transparent;
 
     color:#D4AF37;
-
-    border:2px solid #D4AF37;
-
-    padding:15px 35px;
-
-    border-radius:8px;
-
-    font-size:18px;
-
-    cursor:pointer;
-
-    transition:.3s;
-
 }
 
-.login-btn:hover{
+.register-btn:hover,
+.member-btn:hover{
+
+    transform:translateY(-5px);
+}
+
+.member-btn:hover{
 
     background:#D4AF37;
 
-    color:black;
-
+    color:#111;
 }
+
+/* Tablet */
+
+@media(max-width:992px){
+
+    .hero h1{
+    
+        font-size:56px;
+    
+    }
+    
+    .hero h2{
+    
+        font-size:28px;
+    
+    }
+    
+    .hero-logo{
+    
+        width:220px;
+    
+    }
+    
+    .watermark-logo{
+    
+        width:600px;
+    
+    }
+    
+    }
