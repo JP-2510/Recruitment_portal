@@ -183,66 +183,121 @@ app.post("/register", (req, res) => {
         verticals
     } = req.body;
 
-    const candidateSql = `
-        INSERT INTO candidate
-        (
-            full_name,
-            branch,
-            year_of_study,
-            email,
-            phone
-        )
-        VALUES (?, ?, ?, ?, ?)
+    // Validate vertical selection
+    if (!verticals || verticals.length === 0) {
+        return res.status(400).json({
+            message: "Please select at least one vertical."
+        });
+    }
+
+    // Check duplicate email or phone
+    const checkSql = `
+        SELECT *
+        FROM candidate
+        WHERE email = ?
+           OR phone = ?
     `;
 
     db.query(
-        candidateSql,
-        [
-            full_name,
-            branch,
-            year_of_study,
-            email,
-            phone
-        ],
-        (err, result) => {
+        checkSql,
+        [email, phone],
+        (checkErr, checkResult) => {
 
-            if(err){
-                console.log(err);
+            if (checkErr) {
+
+                console.error(checkErr);
 
                 return res.status(500).json({
-                    message: "Candidate Registration Failed"
+                    message: "Database Error"
                 });
+
             }
 
-            const ttr_id = result.insertId;
+            if (checkResult.length > 0) {
 
-            const values = verticals.map(
-                (vertical_id) => [ttr_id, vertical_id]
-            );
+                return res.status(409).json({
+                    message: "Candidate with this email or phone number already exists."
+                });
 
-            const verticalSql = `
-                INSERT INTO candidate_vertical
-                (ttr_id, vertical_id)
-                VALUES ?
+            }
+
+            // Insert Candidate
+            const candidateSql = `
+                INSERT INTO candidate
+                (
+                    full_name,
+                    branch,
+                    year_of_study,
+                    email,
+                    phone
+                )
+                VALUES (?, ?, ?, ?, ?)
             `;
 
             db.query(
-                verticalSql,
-                [values],
-                (err2) => {
+                candidateSql,
+                [
+                    full_name,
+                    branch,
+                    year_of_study,
+                    email,
+                    phone
+                ],
+                (err, result) => {
 
-                    if(err2){
-                        console.log(err2);
+                    if (err) {
+
+                        console.error(err);
 
                         return res.status(500).json({
-                            message: "Vertical Assignment Failed"
+                            message: "Unable to register candidate."
                         });
+
                     }
 
-                    res.status(201).json({
-                        message: "Registration Successful",
-                        ttr_id: ttr_id
-                    });
+                    // Since AUTO_INCREMENT starts from 101,
+                    // result.insertId will already be 101,102,...
+
+                    const ttr_id = result.insertId;
+
+                    const values = verticals.map(
+                        (vertical_id) => [ttr_id, vertical_id]
+                    );
+
+                    const verticalSql = `
+                        INSERT INTO candidate_vertical
+                        (
+                            ttr_id,
+                            vertical_id
+                        )
+                        VALUES ?
+                    `;
+
+                    db.query(
+                        verticalSql,
+                        [values],
+                        (err2) => {
+
+                            if (err2) {
+
+                                console.error(err2);
+
+                                return res.status(500).json({
+                                    message: "Candidate registered, but assigning verticals failed."
+                                });
+
+                            }
+
+                            res.status(201).json({
+
+                                message: "Registration Successful",
+
+                                ttr_id
+
+                            });
+
+                        }
+                    );
 
                 }
             );

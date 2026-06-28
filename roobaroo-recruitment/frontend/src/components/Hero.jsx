@@ -1,60 +1,105 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/hero.css";
 import logo from "../assets/logo.png";
 
-import { Link } from "react-router-dom";
-
 function Hero() {
-  return (
-    <section className="hero" id="home">
 
-      <div className="hero-container">
+    const navigate = useNavigate();
 
-        <img
-          src={logo}
-          alt="Roobaroo"
-          className="hero-logo"
-        />
+    const [ttrId, setTtrId] = useState(null);
 
-        <p className="hero-tag">
-          THE CULTURAL SOCIETY OF MANIT BHOPAL
-        </p>
+    useEffect(() => {
 
-        <h1>ROOBAROO</h1>
+        const savedId = localStorage.getItem("ttr_id");
 
-        <h2>Recruitment Portal</h2>
+        if (savedId) {
+            setTtrId(savedId);
+        }
 
-        <p className="hero-description">
-          Discover your talent.
-          <br />
-          Perform. Create. Lead.
-        </p>
+    }, []);
 
-        <div className="hero-buttons">
+    return (
 
-          <Link to="/register">
+        <section className="hero" id="home">
 
-            <button className="primary-btn">
-              Candidate Registration
-            </button>
+            <div className="hero-container">
 
-          </Link>
+                <img
+                    src={logo}
+                    alt="Roobaroo"
+                    className="hero-logo"
+                />
 
-          <Link to="/login">
+                <p className="hero-tag">
+                    THE CULTURAL SOCIETY OF MANIT BHOPAL
+                </p>
 
-            <button className="secondary-btn">
-              Member Login
-            </button>
+                <h1>TICKET TO ROOBAROO</h1>
 
-          </Link>
+                <h2>Recruitment Portal</h2>
 
-        </div>
+                <p className="hero-description">
+                    Discover your talent.
+                    <br />
+                    Perform. Create. Lead.
+                </p>
 
-      </div>
+                <div className="hero-buttons">
 
-     
+                    {!ttrId ? (
 
-    </section>
-  );
+                        <button
+                            onClick={() => navigate("/register")}
+                        >
+                            Register Now
+                        </button>
+
+                    ) : (
+
+                        <div className="registered-box">
+
+                            <p className="welcome-back">
+                                Welcome Back 👋
+                            </p>
+
+                            <span>Your TTR ID</span>
+
+                            <h2>{ttrId}</h2>
+
+                            <div className="registered-buttons">
+
+                                <button
+                                    onClick={() =>
+                                        navigate(`/candidate/${ttrId}`)
+                                    }
+                                >
+                                    View My Profile
+                                </button>
+
+                                <button
+                                    className="secondary-btn"
+                                    onClick={() =>
+                                        navigate("/register")
+                                    }
+                                >
+                                    Register Another Candidate
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    )}
+
+                </div>
+
+            </div>
+
+        </section>
+
+    );
+
 }
 
 export default Hero;

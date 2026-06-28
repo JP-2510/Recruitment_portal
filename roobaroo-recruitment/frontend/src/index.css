@@ -12,14 +12,10 @@ html{
 }
 
 body{
-
-    font-family:'Outfit',sans-serif;
-
-    background:#090909;
-
-    color:white;
-
-    overflow-x:hidden;
+  font-family:'Outfit',sans-serif;
+  background:#FAF9F6;
+  color:#222222;
+  overflow-x:hidden;
 }
 
 a{

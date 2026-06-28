@@ -26,11 +26,13 @@
 
     align-items:center;
 
-    background:rgba(15,15,15,.55);
+    background:rgba(255,255,255,.72);
 
     backdrop-filter:blur(18px);
 
     border:1px solid rgba(212,175,55,.15);
+
+    box-shadow:0 8px 30px rgba(0,0,0,.08);
 
     border-radius:18px;
 
@@ -83,7 +85,7 @@
 
     text-decoration:none;
 
-    color:white;
+    color:#222222;
 
     font-size:18px;
 
@@ -205,7 +207,7 @@
 
     border:none;
 
-    color:white;
+    color:#222222;
 
     font-size:26px;
 
@@ -299,9 +301,10 @@
 
 .scrolled{
 
-    background:rgba(8,8,8,.92);
+    background:rgba(255,255,255,.92);
 
-    box-shadow:0 10px 40px rgba(0,0,0,.45);
+    backdrop-filter:blur(20px);
 
-    border:1px solid rgba(212,175,55,.25);
+    box-shadow:0 15px 40px rgba(0,0,0,.12);
+
 }

@@ -5,6 +5,8 @@ import Register from "./pages/Register";
 import Candidates from "./pages/Candidates";
 import CandidateProfile from "./pages/CandidateProfile";
 import Login from "./pages/Login";
+import Success from "./pages/Success";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -35,6 +37,16 @@ function App() {
          path="/login"
          element={<Login/>}
        /> 
+
+        <Route
+         path="/Dashboard"
+         element={<Dashboard/>}
+       /> 
+
+       <Route
+         path="/success"
+         element={<Success />}
+       />
 
       </Routes>
     </BrowserRouter>
