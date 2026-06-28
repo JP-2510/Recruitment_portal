@@ -1,52 +1,57 @@
 import "../styles/hero.css";
 import logo from "../assets/logo.png";
 
+import { Link } from "react-router-dom";
+
 function Hero() {
   return (
-    <section className="hero">
+    <section className="hero" id="home">
 
-      <div className="background-glow"></div>
-
-      <img
-        src={logo}
-        alt="Roobaroo"
-        className="watermark-logo"
-      />
-
-      <div className="hero-content">
+      <div className="hero-container">
 
         <img
           src={logo}
-          alt="Roobaroo Logo"
+          alt="Roobaroo"
           className="hero-logo"
         />
 
-        <span className="tag">
-          MANIT Bhopal Cultural Society
-        </span>
+        <p className="hero-tag">
+          THE CULTURAL SOCIETY OF MANIT BHOPAL
+        </p>
 
-        <h1>Roobaroo</h1>
+        <h1>ROOBAROO</h1>
 
-        <h2>Recruitment Portal 2026</h2>
+        <h2>Recruitment Portal</h2>
 
-        <p>
+        <p className="hero-description">
           Discover your talent.
+          <br />
           Perform. Create. Lead.
         </p>
 
         <div className="hero-buttons">
 
-          <button className="register-btn">
-            Candidate Registration
-          </button>
+          <Link to="/register">
 
-          <button className="member-btn">
-            Member Login
-          </button>
+            <button className="primary-btn">
+              Candidate Registration
+            </button>
+
+          </Link>
+
+          <Link to="/login">
+
+            <button className="secondary-btn">
+              Member Login
+            </button>
+
+          </Link>
 
         </div>
 
       </div>
+
+     
 
     </section>
   );

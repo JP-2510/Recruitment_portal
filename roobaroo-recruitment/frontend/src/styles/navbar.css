@@ -1,78 +1,186 @@
-/* Navbar */
+/* ===========================
+        NAVBAR
+=========================== */
 
 .navbar{
-    position:fixed;
-    top:0;
-    left:0;
 
-    width:100%;
-    height:80px;
+    position:fixed;
+
+    top:20px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:94%;
+
+    max-width:1450px;
+
+    height:78px;
+
+    padding:0 35px;
 
     display:flex;
+
     justify-content:space-between;
+
     align-items:center;
 
-    padding:0 70px;
+    background:rgba(15,15,15,.55);
 
-    background:rgba(0,0,0,0.25);
-    backdrop-filter:blur(12px);
+    backdrop-filter:blur(18px);
 
-    z-index:999;
+    border:1px solid rgba(212,175,55,.15);
+
+    border-radius:18px;
+
+    z-index:1000;
+
+    transition:.35s;
 }
 
-.navbar-logo h2{
 
-    color:#D4AF37;
+/* ===========================
+        LOGO
+=========================== */
 
-    font-size:30px;
+.logo{
 
-    letter-spacing:2px;
+    width:220px;
 
     cursor:pointer;
-}
-
-.navbar-links{
-
-    display:flex;
-
-    gap:45px;
-
-    list-style:none;
-}
-
-.navbar-links a{
-
-    color:white;
-
-    text-decoration:none;
-
-    font-size:18px;
 
     transition:.3s;
 }
 
-.navbar-links a:hover{
+.logo:hover{
+
+    transform:scale(1.03);
+}
+
+
+/* ===========================
+        LINKS
+=========================== */
+
+.nav-links{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:55px;
+
+    list-style:none;
+}
+
+.nav-links li{
+
+    position:relative;
+}
+
+.nav-links a{
+
+    text-decoration:none;
+
+    color:white;
+
+    font-size:18px;
+
+    font-weight:400;
+
+    transition:.3s;
+}
+
+.nav-links a:hover{
 
     color:#D4AF37;
 }
 
+
+/* Active Link */
+
+.active a{
+
+    color:#D4AF37;
+}
+
+.active::after{
+
+    content:"";
+
+    position:absolute;
+
+    bottom:-12px;
+
+    left:0;
+
+    width:100%;
+
+    height:3px;
+
+    border-radius:10px;
+
+    background:#D4AF37;
+}
+
+
+/* Hover Underline */
+
+.nav-links li::after{
+
+    content:"";
+
+    position:absolute;
+
+    bottom:-12px;
+
+    left:0;
+
+    width:0;
+
+    height:3px;
+
+    border-radius:10px;
+
+    background:#D4AF37;
+
+    transition:.3s;
+}
+
+.nav-links li:hover::after{
+
+    width:100%;
+}
+
+
+/* ===========================
+        BUTTON
+=========================== */
+
 .login-btn{
 
-    padding:12px 28px;
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:14px 28px;
+
+    border:2px solid #D4AF37;
+
+    border-radius:50px;
 
     background:transparent;
 
     color:#D4AF37;
 
-    border:2px solid #D4AF37;
-
-    border-radius:8px;
-
     font-size:16px;
 
     cursor:pointer;
 
-    transition:.3s;
+    transition:.35s;
 }
 
 .login-btn:hover{
@@ -80,4 +188,120 @@
     background:#D4AF37;
 
     color:#111;
+
+    box-shadow:0 0 18px rgba(212,175,55,.45);
+}
+
+
+/* ===========================
+     MOBILE MENU ICON
+=========================== */
+
+.menu-btn{
+
+    display:none;
+
+    background:none;
+
+    border:none;
+
+    color:white;
+
+    font-size:26px;
+
+    cursor:pointer;
+}
+
+
+/* ===========================
+      RESPONSIVE
+=========================== */
+
+@media(max-width:1024px){
+
+.navbar{
+
+    padding:0 25px;
+}
+
+.logo{
+
+    width:180px;
+}
+
+.nav-links{
+
+    gap:35px;
+}
+
+}
+
+@media(max-width:768px){
+
+    .navbar{
+    
+        width:95%;
+    
+        height:72px;
+    
+        padding:0 20px;
+    }
+    
+    .logo{
+    
+        width:150px;
+    }
+    
+    .login-btn{
+    
+        display:none;
+    }
+    
+    .menu-btn{
+    
+        display:block;
+    
+        color:white;
+    
+        font-size:26px;
+    }
+    
+    .nav-links{
+    
+        position:absolute;
+    
+        top:95px;
+    
+        left:0;
+    
+        width:100%;
+    
+        background:#111;
+    
+        flex-direction:column;
+    
+        gap:30px;
+    
+        padding:35px 0;
+    
+        border-radius:18px;
+    
+        display:none;
+    }
+    
+    .active-menu{
+    
+        display:flex;
+    }
+    
+    }
+/* Navbar after scrolling */
+
+.scrolled{
+
+    background:rgba(8,8,8,.92);
+
+    box-shadow:0 10px 40px rgba(0,0,0,.45);
+
+    border:1px solid rgba(212,175,55,.25);
 }
