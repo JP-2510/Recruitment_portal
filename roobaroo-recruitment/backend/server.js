@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
+const memberRoutes = require("./routes/memberRoutes");
+
 
 const storage = multer.diskStorage({
 
@@ -27,6 +29,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use("/member", memberRoutes);
 app.use("/uploads",
     express.static("uploads")
 );
