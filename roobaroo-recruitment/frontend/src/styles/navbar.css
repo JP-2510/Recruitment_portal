@@ -1,5 +1,5 @@
 /* ===========================
-        NAVBAR
+   NAVBAR
 =========================== */
 
 .navbar{
@@ -12,57 +12,46 @@
 
     transform:translateX(-50%);
 
-    width:94%;
+    width:92%;
 
-    max-width:1450px;
+    max-width:1400px;
 
-    height:78px;
+    height:82px;
+
+    background:rgba(255,255,255,.85);
+
+    backdrop-filter:blur(18px);
+
+    border-radius:18px;
 
     padding:0 35px;
 
     display:flex;
 
-    justify-content:space-between;
-
     align-items:center;
 
-    background:rgba(255,255,255,.72);
+    justify-content:space-between;
 
-    backdrop-filter:blur(18px);
+    box-sizing:border-box;
 
-    border:1px solid rgba(212,175,55,.15);
+    box-shadow:0 10px 35px rgba(0,0,0,.08);
 
-    box-shadow:0 8px 30px rgba(0,0,0,.08);
-
-    border-radius:18px;
-
-    z-index:1000;
-
-    transition:.35s;
+    z-index:999;
 }
 
-
 /* ===========================
-        LOGO
+      LOGO
 =========================== */
 
 .logo{
 
-    width:220px;
+    width:180px;
 
-    cursor:pointer;
-
-    transition:.3s;
+    display:block;
 }
-
-.logo:hover{
-
-    transform:scale(1.03);
-}
-
 
 /* ===========================
-        LINKS
+      LINKS
 =========================== */
 
 .nav-links{
@@ -71,25 +60,33 @@
 
     align-items:center;
 
-    gap:55px;
+    justify-content:center;
+
+    gap:50px;
 
     list-style:none;
+
+    margin:0;
+
+    padding:0;
+
+    flex:1;
 }
 
 .nav-links li{
 
-    position:relative;
+    list-style:none;
 }
 
 .nav-links a{
 
-    text-decoration:none;
+    color:#222;
 
-    color:#222222;
+    text-decoration:none;
 
     font-size:18px;
 
-    font-weight:400;
+    font-weight:500;
 
     transition:.3s;
 }
@@ -99,66 +96,14 @@
     color:#D4AF37;
 }
 
-
-/* Active Link */
-
-.active a{
-
-    color:#D4AF37;
-}
-
-.active::after{
-
-    content:"";
-
-    position:absolute;
-
-    bottom:-12px;
-
-    left:0;
-
-    width:100%;
-
-    height:3px;
-
-    border-radius:10px;
-
-    background:#D4AF37;
-}
-
-
-/* Hover Underline */
-
-.nav-links li::after{
-
-    content:"";
-
-    position:absolute;
-
-    bottom:-12px;
-
-    left:0;
-
-    width:0;
-
-    height:3px;
-
-    border-radius:10px;
-
-    background:#D4AF37;
-
-    transition:.3s;
-}
-
-.nav-links li:hover::after{
-
-    width:100%;
-}
-
-
 /* ===========================
-        BUTTON
+      BUTTON
 =========================== */
+
+.login-link{
+
+    text-decoration:none;
+}
 
 .login-btn{
 
@@ -166,37 +111,36 @@
 
     align-items:center;
 
-    gap:12px;
+    gap:10px;
 
-    padding:14px 28px;
+    padding:14px 24px;
+
+    border-radius:40px;
 
     border:2px solid #D4AF37;
 
-    border-radius:50px;
-
-    background:transparent;
+    background:white;
 
     color:#D4AF37;
 
-    font-size:16px;
-
     cursor:pointer;
 
-    transition:.35s;
+    font-size:16px;
+
+    font-weight:500;
+
+    transition:.3s;
 }
 
 .login-btn:hover{
 
     background:#D4AF37;
 
-    color:#111;
-
-    box-shadow:0 0 18px rgba(212,175,55,.45);
+    color:white;
 }
 
-
 /* ===========================
-     MOBILE MENU ICON
+      MOBILE
 =========================== */
 
 .menu-btn{
@@ -207,104 +151,54 @@
 
     border:none;
 
-    color:#222222;
-
     font-size:26px;
 
     cursor:pointer;
 }
 
+@media(max-width:900px){
 
-/* ===========================
-      RESPONSIVE
-=========================== */
+.nav-links{
 
-@media(max-width:1024px){
+    position:absolute;
 
-.navbar{
+    top:90px;
 
-    padding:0 25px;
+    left:0;
+
+    width:100%;
+
+    background:white;
+
+    display:none;
+
+    flex-direction:column;
+
+    padding:30px 0;
+
+    border-radius:15px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+.nav-links.active{
+
+    display:flex;
+}
+
+.login-btn{
+
+    display:none;
+}
+
+.menu-btn{
+
+    display:block;
 }
 
 .logo{
 
-    width:180px;
+    width:150px;
 }
-
-.nav-links{
-
-    gap:35px;
-}
-
-}
-
-@media(max-width:768px){
-
-    .navbar{
-    
-        width:95%;
-    
-        height:72px;
-    
-        padding:0 20px;
-    }
-    
-    .logo{
-    
-        width:150px;
-    }
-    
-    .login-btn{
-    
-        display:none;
-    }
-    
-    .menu-btn{
-    
-        display:block;
-    
-        color:white;
-    
-        font-size:26px;
-    }
-    
-    .nav-links{
-    
-        position:absolute;
-    
-        top:95px;
-    
-        left:0;
-    
-        width:100%;
-    
-        background:#111;
-    
-        flex-direction:column;
-    
-        gap:30px;
-    
-        padding:35px 0;
-    
-        border-radius:18px;
-    
-        display:none;
-    }
-    
-    .active-menu{
-    
-        display:flex;
-    }
-    
-    }
-/* Navbar after scrolling */
-
-.scrolled{
-
-    background:rgba(255,255,255,.92);
-
-    backdrop-filter:blur(20px);
-
-    box-shadow:0 15px 40px rgba(0,0,0,.12);
 
 }

@@ -89,7 +89,7 @@ function Sidebar({
 
             <div>
 
-                <div className="logo-section">
+                <div className="sidebar-logo-section">
 
                     <img
                         src={logo}

@@ -42,21 +42,46 @@ app.get("/", (req,res)=>{
 app.get("/candidates", (req, res) => {
 
     const sql = `
-        SELECT
-            ttr_id,
-            full_name,
-            branch,
-            final_status
-        FROM candidate
-        ORDER BY ttr_id
+    SELECT
+    c.ttr_id,
+    c.full_name,
+    c.branch,
+    c.year_of_study,
+    c.email,
+    c.phone,
+    GROUP_CONCAT(v.vertical_name SEPARATOR ', ') AS vertical_name,
+    c.final_status
+
+FROM candidate c
+
+LEFT JOIN candidate_vertical cv
+ON c.ttr_id = cv.ttr_id
+
+LEFT JOIN vertical v
+ON cv.vertical_id = v.vertical_id
+
+GROUP BY
+    c.ttr_id,
+    c.full_name,
+    c.branch,
+    c.year_of_study,
+    c.email,
+    c.phone,
+    c.final_status
+
+ORDER BY c.ttr_id;
     `;
 
     db.query(sql, (err, result) => {
 
         if(err){
+
+            console.log(err);
+
             return res.status(500).json({
-                message: "Database Error"
+                message:"Database Error"
             });
+
         }
 
         res.json(result);

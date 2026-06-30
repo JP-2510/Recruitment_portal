@@ -2,6 +2,8 @@ import { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import "../styles/dashboard.css";
+import CandidateList from "./CandidateList";
+import Evaluation from "./Evaluation";
 
 function Dashboard() {
 
@@ -23,90 +25,68 @@ function Dashboard() {
 
                 <Topbar member={member} />
 
-                <div className="hero">
+                <div className="dashboard-content">
 
-<div className="hero-left">
+{
 
-    <h1>
+    activePage === "dashboard" && (
 
-        👋 Welcome Back,
+        <>
 
-        <br/>
+            <div className="hero">
 
-        <span>{member.full_name}</span>
+                <div className="hero-left">
 
-    </h1>
+                    <h1>
 
-    <p>
+                        👋 Welcome Back,
 
-        {member.role}
+                        <br/>
 
-        •
+                        <span>{member.full_name}</span>
 
-        Vocalist
+                    </h1>
 
-    </p>
+                    <p>
 
-    <h4>
+                        {member.role}
 
-        Manage recruitment, candidate evaluations,
-        uploads and selections from one place.
+                        •
 
-    </h4>
+                        Vocalist
 
-</div>
+                    </p>
 
-</div>
+                    <h4>
 
-<div className="cards">
+                        Manage recruitment, candidate evaluations,
+                        uploads and selections from one place.
 
-<div className="home-card">
+                    </h4>
 
-    <h2>Candidate List</h2>
+                </div>
 
-    <p>
+            </div>
 
-        View and manage all registered candidates.
+        </>
 
-    </p>
+    )
 
-</div>
+}
 
-<div className="home-card">
+{
 
-    <h2>Evaluation</h2>
+    activePage === "candidates" && (
 
-    <p>
+        <CandidateList/>
 
-        Evaluate candidates according to your role.
+    )}
 
-    </p>
+{activePage === "evaluation" && (
 
-</div>
+<Evaluation />
 
-<div className="home-card">
-
-    <h2>Upload Photos</h2>
-
-    <p>
-
-        Upload and manage candidate photographs.
-
-    </p>
-
-</div>
-
-<div className="home-card">
-
-    <h2>Members</h2>
-
-    <p>
-
-        Manage recruitment team members.
-
-    </p>
-
-</div>
+)}
 
 </div>
 

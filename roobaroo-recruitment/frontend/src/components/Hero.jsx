@@ -25,12 +25,6 @@ function Hero() {
 
             <div className="hero-container">
 
-                <img
-                    src={logo}
-                    alt="Roobaroo"
-                    className="hero-logo"
-                />
-
                 <p className="hero-tag">
                     THE CULTURAL SOCIETY OF MANIT BHOPAL
                 </p>

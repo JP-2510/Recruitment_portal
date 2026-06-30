@@ -3,11 +3,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Candidates from "./pages/Candidates";
-import CandidateProfile from "./pages/CandidateProfile";
 import Login from "./pages/Login";
 import Success from "./pages/Success";
 import Dashboard from "./pages/Dashboard";
 import ChangePassword from "./pages/Changepassword";
+// import CandidateList from " ./pages/CandidateList";
 
 function App() {
   return (
@@ -29,11 +29,6 @@ function App() {
           element={<Candidates />}
         />
 
-        <Route
-          path="/candidate/:id"
-          element={<CandidateProfile />}
-        />
-
        <Route
          path="/login"
          element={<Login/>}
@@ -53,6 +48,11 @@ function App() {
         path="/change-password"
         element={<ChangePassword />}
       />
+
+{/* <Route
+        path="/candidatelist"
+        element={<CandidateList />}
+      /> */}
 
       </Routes>
     </BrowserRouter>

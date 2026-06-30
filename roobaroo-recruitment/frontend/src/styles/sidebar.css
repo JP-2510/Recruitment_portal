@@ -16,7 +16,7 @@
 
 }
 
-.logo-section{
+.sidebar-logo-section{
 
     display:flex;
 
@@ -30,7 +30,7 @@
 
 }
 
-.logo-section img{
+.sidebar-logo-section img{
 
     width:170px;
 
@@ -44,7 +44,7 @@
 
 }
 
-.logo-section h2{
+.sidebar-logo-section h2{
 
     font-size:30px;
 
@@ -56,7 +56,7 @@
 
 }
 
-.logo-section span{
+.sidebar-logo-section span{
 
     margin-top:6px;
 
@@ -70,7 +70,7 @@
 
 }
 
-nav{
+.sidebar nav{
 
     display:flex;
 

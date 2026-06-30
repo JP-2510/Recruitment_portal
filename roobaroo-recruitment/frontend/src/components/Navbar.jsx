@@ -3,85 +3,63 @@ import logo from "../assets/logo.png";
 
 import { Link } from "react-router-dom";
 import { FaUser, FaBars, FaTimes } from "react-icons/fa";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 function Navbar() {
 
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
 
-  useEffect(() => {
+    return (
 
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
+        <nav className="navbar">
 
-    window.addEventListener("scroll", handleScroll);
+            <Link to="/" className="logo-section">
 
-    return () => window.removeEventListener("scroll", handleScroll);
+                <img
+                    src={logo}
+                    alt="Roobaroo"
+                    className="logo"
+                />
 
-  }, []);
+            </Link>
 
-  return (
+            <ul className={menuOpen ? "nav-links active" : "nav-links"}>
 
-    <nav className={`navbar ${scrolled ? "scrolled" : ""}`}>
+                <li><a href="#home">Home</a></li>
 
-      <div className="navbar-left">
+                <li><a href="#about">About</a></li>
 
-        <Link to="/">
-          <img src={logo} alt="Roobaroo Logo" className="logo"/>
-        </Link>
+                <li><a href="#recruitment">Recruitment</a></li>
 
-      </div>
+                <li><a href="#contact">Contact</a></li>
 
-      <ul className={menuOpen ? "nav-links active-menu" : "nav-links"}>
+            </ul>
 
-        <li className="active">
-          <a href="#home">Home</a>
-        </li>
+            <Link to="/login" className="login-link">
 
-        <li>
-          <a href="#about">About</a>
-        </li>
+                <button className="login-btn">
 
-        <li>
-          <a href="#recruitment">Recruitment</a>
-        </li>
+                    <FaUser />
 
-        <li>
-          <a href="#contact">Contact</a>
-        </li>
+                    Member Login
 
-      </ul>
+                </button>
 
-      <div className="navbar-right">
+            </Link>
 
-        <Link to="/login">
+            <button
+                className="menu-btn"
+                onClick={() => setMenuOpen(!menuOpen)}
+            >
 
-          <button className="login-btn">
+                {menuOpen ? <FaTimes /> : <FaBars />}
 
-            <FaUser />
+            </button>
 
-            Member Login
+        </nav>
 
-          </button>
+    );
 
-        </Link>
-
-        <button
-          className="menu-btn"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-
-          {menuOpen ? <FaTimes /> : <FaBars />}
-
-        </button>
-
-      </div>
-
-    </nav>
-
-  );
 }
 
 export default Navbar;
