@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -13,35 +14,52 @@ function Login() {
 
     const [error, setError] = useState("");
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
 
         e.preventDefault();
-
-        if (
-            email === "admin@roobaroo.in" &&
-            password === "roobaroo123"
-        ) {
-
-            localStorage.setItem(
-                "memberLoggedIn",
-                "true"
+    
+        setError("");
+    
+        try {
+    
+            const response = await axios.post(
+                "http://localhost:3000/member/login",
+                {
+                    email,
+                    password
+                }
             );
-
+            console.log(response.data);
+    
+            const member = response.data.member;
+            console.log(member);
+    
             localStorage.setItem(
-                "memberName",
-                "Technical Team"
+                "member",
+                JSON.stringify(member)
             );
-
-            navigate("/dashboard");
-
+    
+            if (member.must_change_password) {
+    
+                navigate("/change-password");
+    
+            } else {
+    
+                navigate("/dashboard");
+    
+            }
+    
         }
-
-        else {
-
-            setError("Invalid Email or Password");
-
+    
+        catch (err) {
+    
+            setError(
+                err.response?.data?.message ||
+                "Login Failed"
+            );
+    
         }
-
+    
     };
 
     return (

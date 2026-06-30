@@ -1,0 +1,42 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#F5F7FA;
+}
+
+.dashboard{
+
+    display:flex;
+
+    min-height:100vh;
+
+    width:100%;
+
+}
+
+.dashboard-main{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    background:#F5F7FA;
+
+}
+
+.dashboard-content{
+
+    flex:1;
+
+    padding:40px;
+
+    overflow-y:auto;
+
+}

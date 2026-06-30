@@ -7,6 +7,7 @@ import CandidateProfile from "./pages/CandidateProfile";
 import Login from "./pages/Login";
 import Success from "./pages/Success";
 import Dashboard from "./pages/Dashboard";
+import ChangePassword from "./pages/Changepassword";
 
 function App() {
   return (
@@ -47,6 +48,11 @@ function App() {
          path="/success"
          element={<Success />}
        />
+
+       <Route
+        path="/change-password"
+        element={<ChangePassword />}
+      />
 
       </Routes>
     </BrowserRouter>

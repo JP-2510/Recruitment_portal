@@ -1,0 +1,67 @@
+.welcome-card{
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:35px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:35px;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+}
+
+.welcome-left h1{
+
+    color:#8B0000;
+
+    font-size:36px;
+
+    margin-bottom:12px;
+
+}
+
+.welcome-left h2{
+
+    color:#222;
+
+    font-size:30px;
+
+    margin-bottom:8px;
+
+}
+
+.welcome-left p{
+
+    color:#666;
+
+    font-size:18px;
+
+}
+
+.welcome-right{
+
+    text-align:right;
+
+}
+
+.welcome-right h3{
+
+    color:#8B0000;
+
+    margin-bottom:10px;
+
+}
+
+.welcome-right p{
+
+    color:#666;
+
+}
