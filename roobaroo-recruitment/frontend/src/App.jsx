@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Success from "./pages/Success";
 import Dashboard from "./pages/Dashboard";
 import ChangePassword from "./pages/Changepassword";
+import UploadPhotos from "./pages/UploadPhotos";
 // import CandidateList from " ./pages/CandidateList";
 
 function App() {
@@ -48,6 +49,13 @@ function App() {
         path="/change-password"
         element={<ChangePassword />}
       />
+
+      <Route
+       path="/upload-photos"
+       element={<UploadPhotos />}
+      />
+
+
 
 {/* <Route
         path="/candidatelist"

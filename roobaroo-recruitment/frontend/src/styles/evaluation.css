@@ -1,278 +1,306 @@
 .evaluation-page{
-
     width:100%;
-
 }
 
-/* ==========================
+/* ===========================
         HEADER
-========================== */
+=========================== */
 
 .evaluation-header{
-
-    margin-bottom:35px;
-
+    margin-bottom:30px;
 }
 
 .evaluation-header h1{
-
     font-size:34px;
-
     color:#222;
-
     margin-bottom:8px;
-
 }
 
 .evaluation-header p{
-
     color:#666;
-
-    font-size:16px;
-
+    font-size:15px;
 }
 
-/* ==========================
+/* ===========================
         TOOLBAR
-========================== */
+=========================== */
 
 .evaluation-toolbar{
-
     display:flex;
-
-    justify-content:space-between;
-
     align-items:center;
-
+    justify-content:space-between;
     gap:20px;
-
-    margin-bottom:35px;
-
+    margin-bottom:30px;
     flex-wrap:wrap;
-
 }
 
-.evaluation-toolbar input{
-
+.search-box{
     flex:1;
-
     max-width:380px;
-
-    padding:14px 18px;
-
-    border:1px solid #ddd;
-
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:white;
+    padding:0 16px;
     border-radius:12px;
-
-    outline:none;
-
-    font-size:15px;
-
+    border:1px solid #ddd;
+    height:52px;
+    box-shadow:0 3px 12px rgba(0,0,0,.05);
 }
 
-.evaluation-toolbar input:focus{
+.search-box svg{
+    color:#777;
+}
 
-    border-color:#D4AF37;
-
+.search-box input{
+    width:100%;
+    border:none;
+    outline:none;
+    font-size:15px;
+    background:transparent;
 }
 
 .evaluation-toolbar select{
+    height:52px;
+    min-width:180px;
+    padding:0 15px;
+    border-radius:12px;
+    border:1px solid #ddd;
+    background:white;
+    font-size:15px;
+    cursor:pointer;
+    outline:none;
+}
+
+.evaluation-toolbar select:focus{
+    border-color:#D4AF37;
+}
+
+/* ===========================
+        TABLE
+=========================== */
+
+.table-container{
+    background:white;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+thead{
+    background:#8B0000;
+}
+
+thead th{
+    color:white;
+    padding:18px;
+    text-align:center;
+    font-size:15px;
+    font-weight:600;
+}
+
+tbody tr{
+    border-bottom:1px solid #eee;
+    transition:.25s;
+}
+
+tbody tr:hover{
+    background:#FFF9EC;
+}
+
+tbody td{
+    padding:18px;
+    text-align:center;
+    color:#333;
+    font-size:15px;
+}
+
+.empty{
+    padding:40px;
+    color:#777;
+    font-size:16px;
+}
+
+/* ===========================
+      ICON BUTTONS
+=========================== */
+
+.icon-btn{
+    width:40px;
+    height:40px;
+    border:none;
+    border-radius:50%;
+    background:#F7F7F7;
+    cursor:pointer;
+    transition:.3s;
+    font-size:17px;
+    color:#8B0000;
+}
+
+.icon-btn:hover{
+    background:#D4AF37;
+    color:white;
+}
+
+/* ===========================
+      SCORE INPUT
+=========================== */
+
+.score-input{
+    width:80px;
+    height:40px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    text-align:center;
+    outline:none;
+    font-size:15px;
+}
+
+.score-input:focus{
+    border-color:#D4AF37;
+}
+
+/* ===========================
+     DECISION SELECT
+=========================== */
+
+.decision-select{
+    width:150px;
+    height:40px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    outline:none;
+    cursor:pointer;
+    padding:0 10px;
+}
+
+.decision-select:focus{
+    border-color:#D4AF37;
+}
+
+/* ===========================
+        STATUS COLORS
+=========================== */
+
+.selected{
+    color:#008000;
+    font-weight:600;
+}
+
+.rejected{
+    color:#d32f2f;
+    font-weight:600;
+}
+
+.pending{
+    color:#f57c00;
+    font-weight:600;
+}
+
+.discuss{
+    color:#1976d2;
+    font-weight:600;
+}
+
+/* ===========================
+        RESPONSIVE
+=========================== */
+
+@media(max-width:1100px){
+
+.table-container{
+    overflow-x:auto;
+}
+
+table{
+    min-width:900px;
+}
+
+}
+
+@media(max-width:768px){
+
+.evaluation-header h1{
+    font-size:28px;
+}
+
+.evaluation-toolbar{
+    flex-direction:column;
+    align-items:stretch;
+}
+
+.search-box{
+    max-width:100%;
+}
+
+.evaluation-toolbar select{
+    width:100%;
+}
+
+}
+
+/* ===========================
+        REMARKS
+=========================== */
+
+.remarks-box{
 
     width:220px;
 
-    padding:14px;
+    min-height:70px;
+
+    resize:vertical;
+
+    padding:10px;
 
     border:1px solid #ddd;
 
-    border-radius:12px;
+    border-radius:8px;
 
     outline:none;
 
-    cursor:pointer;
+    font-size:14px;
 
-    font-size:15px;
+    font-family:'Outfit',sans-serif;
 
-}
-
-/* ==========================
-      CANDIDATE CARD
-========================== */
-
-.candidate-card{
-
-    display:grid;
-
-    grid-template-columns:350px 1fr;
-
-    gap:35px;
-
-    background:white;
-
-    border-radius:22px;
-
-    padding:30px;
-
-    margin-bottom:35px;
-
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
-
-}
-
-/* ==========================
-        LEFT SIDE
-========================== */
-
-.candidate-left{
-
-    display:flex;
-
-    flex-direction:column;
-
-    align-items:center;
-
-}
-
-.candidate-left img{
-
-    width:190px;
-
-    height:230px;
-
-    object-fit:cover;
-
-    border-radius:18px;
-
-    margin-bottom:25px;
-
-    border:3px solid #D4AF37;
-
-}
-
-.candidate-info{
-
-    width:100%;
-
-}
-
-.candidate-info h2{
-
-    color:#8B0000;
-
-    margin-bottom:18px;
-
-    text-align:center;
-
-}
-
-.candidate-info p{
-
-    margin-bottom:10px;
-
-    color:#444;
-
-    line-height:1.6;
-
-}
-
-.candidate-info strong{
-
-    color:#222;
-
-}
-
-/* ==========================
-        RIGHT SIDE
-========================== */
-
-.candidate-right{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:22px;
-
-}
-
-.input-group{
-
-    display:flex;
-
-    flex-direction:column;
-
-}
-
-.input-group label{
-
-    margin-bottom:10px;
-
-    color:#222;
-
-    font-weight:600;
-
-}
-
-.input-group input,
-
-.input-group textarea,
-
-.input-group select{
-
-    padding:15px;
-
-    border-radius:12px;
-
-    border:1px solid #ddd;
-
-    outline:none;
-
-    font-size:15px;
+    background:#fff;
 
     transition:.3s;
 
 }
 
-.input-group textarea{
-
-    resize:none;
-
-}
-
-.input-group input:focus,
-
-.input-group textarea:focus,
-
-.input-group select:focus{
+.remarks-box:focus{
 
     border-color:#D4AF37;
 
-    box-shadow:0 0 0 3px rgba(212,175,55,.15);
+    box-shadow:0 0 8px rgba(212,175,55,.25);
 
 }
 
-/* ==========================
+/* ===========================
         SAVE BUTTON
-========================== */
+=========================== */
 
 .save-btn{
-
-    margin-top:15px;
-
-    height:56px;
-
-    border:none;
-
-    border-radius:14px;
 
     background:#8B0000;
 
     color:white;
 
-    font-size:17px;
+    border:none;
 
-    font-weight:600;
+    padding:10px 18px;
+
+    border-radius:8px;
 
     cursor:pointer;
+
+    font-size:14px;
 
     transition:.3s;
 
@@ -280,50 +308,8 @@
 
 .save-btn:hover{
 
-    background:#A00000;
+    background:#D4AF37;
 
-    transform:translateY(-2px);
-
-}
-
-/* ==========================
-        RESPONSIVE
-========================== */
-
-@media(max-width:900px){
-
-.candidate-card{
-
-    grid-template-columns:1fr;
-
-}
-
-.candidate-left{
-
-    align-items:center;
-
-}
-
-.candidate-info{
-
-    text-align:center;
-
-}
-
-.evaluation-toolbar{
-
-    flex-direction:column;
-
-}
-
-.evaluation-toolbar input,
-
-.evaluation-toolbar select{
-
-    width:100%;
-
-    max-width:none;
-
-}
+    color:#111;
 
 }

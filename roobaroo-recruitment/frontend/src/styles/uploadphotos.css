@@ -1,0 +1,107 @@
+.upload-page{
+
+    padding:40px;
+
+}
+
+.upload-page h1{
+
+    margin-bottom:25px;
+
+    color:#222;
+
+}
+
+.search-input{
+
+    width:320px;
+
+    padding:12px;
+
+    margin-bottom:25px;
+
+    border-radius:8px;
+
+    border:1px solid #ddd;
+
+}
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    background:white;
+
+}
+
+th{
+
+    background:#D4AF37;
+
+    color:white;
+
+    padding:15px;
+
+}
+
+td{
+
+    padding:15px;
+
+    border-bottom:1px solid #eee;
+
+}
+
+button{
+
+    background:#D4AF37;
+
+    color:white;
+
+    border:none;
+
+    padding:10px 18px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+}
+
+button:hover{
+
+    background:#b99116;
+
+}
+
+.photo-thumb{
+
+    width:65px;
+
+    height:65px;
+
+    object-fit:cover;
+
+    border-radius:8px;
+
+    border:2px solid #D4AF37;
+
+}
+
+.uploaded{
+
+    color:green;
+
+    font-weight:600;
+
+}
+
+.pending{
+
+    color:#c0392b;
+
+    font-weight:600;
+
+}

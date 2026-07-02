@@ -1,4 +1,11 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import {
+    FaSearch,
+    FaEye,
+    FaCommentDots
+} from "react-icons/fa";
+
 import "../styles/evaluation.css";
 
 function Evaluation() {
@@ -6,37 +13,210 @@ function Evaluation() {
     const member = JSON.parse(localStorage.getItem("member"));
 
     const [search, setSearch] = useState("");
-
-    const [vertical, setVertical] = useState("All");
+    const [verticalFilter, setVerticalFilter] = useState("All");
+    const [decisionFilter, setDecisionFilter] = useState("All");
 
     // Dummy Data (Replace with backend later)
-    const candidates = [
-        {
-            ttr_id: 101,
-            full_name: "Jatin Parmar",
-            vertical: "Vocalist, Anchor",
-            photo: "https://via.placeholder.com/180x220"
-        },
-        {
-            ttr_id: 102,
-            full_name: "Samrat Rathod",
-            vertical: "Cameraman",
-            photo: "https://via.placeholder.com/180x220"
+
+    const [candidates,setCandidates] = useState([]);
+
+    useEffect(() => {
+
+        fetchCandidates();
+    
+    }, []);
+    
+    const fetchCandidates = async () => {
+    
+        try{
+    
+            const res = await axios.get(
+    
+                "http://localhost:3000/evaluation/candidates"
+    
+            );
+    
+            setCandidates(res.data);
+    
         }
-    ];
+    
+        catch(err){
+    
+            console.log(err);
+    
+        }
+    
+    };
 
-    const filteredCandidates = candidates.filter((candidate) => {
+    const filteredCandidates = candidates.filter(candidate => {
 
-        const matchSearch = String(candidate.ttr_id)
-            .includes(search);
+        const matchSearch =
+            String(candidate.ttr_id)
+                .toLowerCase()
+                .includes(search.trim().toLowerCase());
 
         const matchVertical =
-            vertical === "All" ||
-            candidate.vertical.includes(vertical);
-
-        return matchSearch && matchVertical;
-
+    
+            verticalFilter === "All"
+    
+            ||
+    
+            candidate.vertical_name === verticalFilter;
+    
+        const matchDecision =
+    
+            decisionFilter === "All"
+    
+            ||
+    
+            (candidate.decision || "Pending") === decisionFilter;
+    
+        return (
+    
+            matchSearch
+    
+            &&
+    
+            matchVertical
+    
+            &&
+    
+            matchDecision
+    
+        );
+    
     });
+
+    const updateScore = (ttr_id, vertical_id, value) => {
+
+        setCandidates(prev =>
+    
+            prev.map(candidate =>
+    
+                candidate.ttr_id === ttr_id &&
+    
+                candidate.vertical_id === vertical_id
+    
+                ?
+    
+                {
+    
+                    ...candidate,
+    
+                    score:value
+    
+                }
+    
+                :
+    
+                candidate
+    
+            )
+    
+        );
+    
+    };
+
+    const updateDecision = (ttr_id, vertical_id, value) => {
+
+        setCandidates(prev =>
+    
+            prev.map(candidate =>
+    
+                candidate.ttr_id === ttr_id &&
+    
+                candidate.vertical_id === vertical_id
+    
+                ?
+    
+                {
+    
+                    ...candidate,
+    
+                    decision:value
+    
+                }
+    
+                :
+    
+                candidate
+    
+            )
+    
+        );
+    
+    };
+
+    const updateRemark = (ttr_id, vertical_id, value) => {
+
+        setCandidates(prev =>
+    
+            prev.map(candidate =>
+    
+                candidate.ttr_id === ttr_id &&
+    
+                candidate.vertical_id === vertical_id
+    
+                ?
+    
+                {
+    
+                    ...candidate,
+    
+                    remark: value
+    
+                }
+    
+                :
+    
+                candidate
+    
+            )
+    
+        );
+    
+    };
+
+    const saveEvaluation = async (candidate) => {
+
+        try{
+    
+            await axios.put(
+    
+                "http://localhost:3000/evaluation",
+    
+                {
+    
+                    ttr_id: candidate.ttr_id,
+    
+                    vertical_id: candidate.vertical_id,
+    
+                    round_no: 1,
+    
+                    score: candidate.score,
+    
+                    remark: candidate.remark,
+    
+                    decision: candidate.decision
+    
+                }
+    
+            );
+
+            await fetchCandidates();
+    
+        }
+    
+        catch(err){
+    
+            console.log(err);
+    
+            alert("Failed to Save Evaluation");
+    
+        }
+    
+    };
+
 
     return (
 
@@ -44,205 +224,334 @@ function Evaluation() {
 
             <div className="evaluation-header">
 
-                <h1>Evaluation</h1>
+                <h1>
+
+                    Evaluation
+
+                </h1>
 
                 <p>
-                    Evaluate candidates according to your assigned role.
+
+                    Evaluate candidates according to your role.
+
                 </p>
 
             </div>
 
+            {/* Toolbar */}
+
             <div className="evaluation-toolbar">
 
-                <input
-                    type="text"
-                    placeholder="Search TTR ID..."
-                    value={search}
-                    onChange={(e) =>
-                        setSearch(e.target.value)
-                    }
-                />
+                <div className="search-box">
+
+                    <FaSearch />
+
+                    <input
+
+                        type="text"
+
+                        placeholder="Search TTR ID..."
+
+                        value={search}
+
+                        onChange={(e)=>
+
+                            setSearch(e.target.value)
+
+                        }
+
+                    />
+
+                </div>
 
                 {
 
-                    member.role === "Coordinator" && (
+                    member.role === "Coordinator" &&
 
-                        <select
-                            value={vertical}
-                            onChange={(e) =>
-                                setVertical(e.target.value)
-                            }
-                        >
+                    <select
 
-                            <option value="All">All Verticals</option>
-                            <option value="Vocalist">Vocalist</option>
-                            <option value="Instrumentalist">Instrumentalist</option>
-                            <option value="Dancer">Dancer</option>
-                            <option value="Anchor">Anchor</option>
-                            <option value="Graphic Designer">Graphic Designer</option>
-                            <option value="Video Editor">Video Editor</option>
-                            <option value="Audio Editor">Audio Editor</option>
-                            <option value="Cameraman">Cameraman</option>
-                            <option value="Sponsorship">Sponsorship</option>
+                        value={verticalFilter}
 
-                        </select>
+                        onChange={(e)=>
 
-                    )
+                            setVerticalFilter(e.target.value)
+
+                        }
+
+                    >
+
+                        <option>All</option>
+                        <option>Vocalist</option>
+                        <option>Instrumentalist</option>
+                        <option>Dancer</option>
+                        <option>Anchor</option>
+                        <option>Cameraman</option>
+                        <option>Graphic Designer</option>
+                        <option>Video Editor</option>
+                        <option>Audio Editor</option>
+                        <option>Sponsorship</option>
+
+                    </select>
 
                 }
 
+                <select
+
+                    value={decisionFilter}
+
+                    onChange={(e)=>
+
+                        setDecisionFilter(e.target.value)
+
+                    }
+
+                >
+
+                    <option>All</option>
+                    <option>Pending</option>
+                    <option>Selected</option>
+                    <option>Rejected</option>
+                    <option>Discuss</option>
+
+                </select>
+
             </div>
 
-            {
+            {/* Table */}
 
-                filteredCandidates.length === 0 ?
+            <div className="table-container">
 
-                (
+                <table>
 
-                    <div className="no-candidate">
+                    <thead>
 
-                        No Candidate Found
+                        <tr>
 
-                    </div>
+                            <th>TTR ID</th>
 
-                )
+                            <th>Name</th>
 
-                :
+                            <th>Vertical</th>
 
-                filteredCandidates.map((candidate) => (
+                            <th>Photo</th>
 
-                    <div
-                        className="candidate-card"
-                        key={candidate.ttr_id}
-                    >
+                            <th>Remarks</th>
 
-                        {/* Left Section */}
+                            <th>Score</th>
 
-                        <div className="candidate-left">
+                            <th>Decision</th>
+                            <th>Save</th>
 
-                            <img
-                                src={candidate.photo}
-                                alt="Candidate"
-                            />
+                        </tr>
 
-                            <div className="candidate-info">
+                    </thead>
 
-                                <h2>
+                    <tbody>
 
-                                    {candidate.full_name}
+                        {
 
-                                </h2>
+                            filteredCandidates.length === 0 ?
 
-                                <p>
+                            (
 
-                                    <strong>TTR ID :</strong>
+                                <tr>
 
-                                    {candidate.ttr_id}
+                                    <td
+                                        colSpan="7"
+                                        className="empty"
+                                    >
 
-                                </p>
+                                        No Candidates Found
 
-                                <div className="vertical-badges">
+                                    </td>
 
-                                    {
+                                </tr>
 
-                                        candidate.vertical
-                                            .split(", ")
-                                            .map((item) => (
+                            )
 
-                                                <span
-                                                    className="badge"
-                                                    key={item}
-                                                >
+                            :
 
-                                                    {item}
+                            filteredCandidates.map((candidate,index)=>(
 
-                                                </span>
-
-                                            ))
-
-                                    }
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        {/* Right Section */}
-
-                        <div className="candidate-right">
-
-                            <div className="input-group">
-
-                                <label>
-
-                                    Score (Out of 10)
-
-                                </label>
-
-                                <input
-                                    type="number"
-                                    placeholder="Enter Score"
-                                    min="0"
-                                    max="10"
-                                />
-
-                            </div>
-
-                            <div className="input-group">
-
-                                <label>
-
-                                    Remarks
-
-                                </label>
-
-                                <textarea
-                                    rows="5"
-                                    placeholder="Write your remarks here..."
-                                >
-
-                                </textarea>
-
-                            </div>
-
-                            <div className="input-group">
-
-                                <label>
-
-                                    Decision
-
-                                </label>
-
-                                <select>
-
-                                    <option>Pending</option>
-
-                                    <option>Selected</option>
-
-                                    <option>Rejected</option>
-
-                                    <option>Discuss</option>
-
-                                </select>
-
-                            </div>
-
-                            <button
-                                className="save-btn"
+                                <tr
+                                key={`${candidate.ttr_id}-${candidate.vertical_id}`}
                             >
 
-                                Save Evaluation
+                                    <td>
 
-                            </button>
+                                        {candidate.ttr_id}
 
-                        </div>
+                                    </td>
 
-                    </div>
+                                    <td>
 
-                ))
+                                        {candidate.full_name}
 
-            }
+                                    </td>
+
+                                    <td>
+
+                                        {candidate.vertical_name}
+
+                                    </td>
+
+                                    <td>
+
+                                        <button
+                                            className="icon-btn"
+                                        >
+
+                                            <FaEye />
+
+                                        </button>
+
+                                    </td>
+
+                                    <td>
+
+    <textarea
+
+        className="remarks-box"
+
+        rows="2"
+
+        placeholder="Write remarks..."
+
+        value={candidate.remark || ""}
+
+        onChange={(e)=>
+
+            updateRemark(
+
+                candidate.ttr_id,
+
+                candidate.vertical_id,
+
+                e.target.value
+
+            )
+
+        }
+
+    />
+
+                                          </td>
+
+                                    <td>
+
+                                        <input
+
+                                            className="score-input"
+
+                                            type="number"
+
+                                            min="0"
+
+                                            max="10"
+
+                                            value={candidate.score}
+
+                                            onChange={(e)=>
+
+                                                updateScore(
+                                                
+                                                candidate.ttr_id,
+                                                
+                                                candidate.vertical_id,
+                                                
+                                                e.target.value
+                                                
+                                                )
+                                                
+                                                }
+
+                                        />
+
+                                    </td>
+
+                                    <td>
+
+                                        <select
+
+                                            className="decision-select"
+
+                                            value={candidate.decision}
+
+                                            onChange={(e)=>
+
+                                                updateDecision(
+
+                                                    candidate.ttr_id,
+                                                    
+                                                    candidate.vertical_id,
+                                                    
+                                                    e.target.value
+                                                    
+                                                    )
+
+                                            }
+
+                                            >
+
+                                            <option>
+
+                                                Pending
+
+                                            </option>
+
+                                            <option>
+
+                                                Selected
+
+                                            </option>
+
+                                            <option>
+
+                                                Rejected
+
+                                            </option>
+
+                                            <option>
+
+                                                Discuss
+
+                                            </option>
+
+                                        </select>
+
+                                    </td>
+
+                                    <td>
+
+    <button
+
+        className="save-btn"
+
+        onClick={() =>
+
+            saveEvaluation(candidate)
+
+        }
+
+    >
+
+        💾 Save
+
+    </button>
+
+</td>
+
+                                </tr>
+
+                            ))
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 

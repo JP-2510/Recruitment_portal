@@ -39,167 +39,6 @@ app.get("/", (req,res)=>{
     res.send("Roobaroo Recruitment API Running");
 });
 
-app.get("/candidates", (req, res) => {
-
-    const sql = `
-    SELECT
-    c.ttr_id,
-    c.full_name,
-    c.branch,
-    c.year_of_study,
-    c.email,
-    c.phone,
-    GROUP_CONCAT(v.vertical_name SEPARATOR ', ') AS vertical_name,
-    c.final_status
-
-FROM candidate c
-
-LEFT JOIN candidate_vertical cv
-ON c.ttr_id = cv.ttr_id
-
-LEFT JOIN vertical v
-ON cv.vertical_id = v.vertical_id
-
-GROUP BY
-    c.ttr_id,
-    c.full_name,
-    c.branch,
-    c.year_of_study,
-    c.email,
-    c.phone,
-    c.final_status
-
-ORDER BY c.ttr_id;
-    `;
-
-    db.query(sql, (err, result) => {
-
-        if(err){
-
-            console.log(err);
-
-            return res.status(500).json({
-                message:"Database Error"
-            });
-
-        }
-
-        res.json(result);
-
-    });
-
-});
-
-app.get("/candidate/:ttr_id", (req, res) => {
-
-    const ttr_id = req.params.ttr_id;
-
-    const sql = `
-    SELECT
-        c.ttr_id,
-        c.full_name,
-        c.branch,
-        c.year_of_study,
-        c.email,
-        c.phone,
-
-        MAX(cp.photo_path) AS photo_path,
-
-        GROUP_CONCAT(v.vertical_name) AS verticals
-
-    FROM candidate c
-
-    LEFT JOIN candidate_photo cp
-    ON c.ttr_id = cp.ttr_id
-
-    LEFT JOIN candidate_vertical cv
-    ON c.ttr_id = cv.ttr_id
-
-    LEFT JOIN vertical v
-    ON cv.vertical_id = v.vertical_id
-
-    WHERE c.ttr_id = ?
-
-    GROUP BY
-        c.ttr_id,
-        c.full_name,
-        c.branch,
-        c.year_of_study,
-        c.email,
-        c.phone
-`;
-
-    db.query(sql, [ttr_id], (err, result) => {
-
-        if (err) {
-            console.log(err);
-
-            return res.status(500).json({
-                message: "Database Error"
-            });
-        }
-
-        if (result.length === 0) {
-            return res.status(404).json({
-                message: "Candidate Not Found"
-            });
-        }
-
-        res.json(result[0]);
-
-    });
-
-});
-
-app.post(
-    "/upload-photo/:ttr_id",
-    upload.single("photo"),
-    (req, res) => {
-
-        const ttr_id = req.params.ttr_id;
-
-        if (!req.file) {
-            return res.status(400).json({
-                message: "No photo uploaded"
-            });
-        }
-        
-        const photo_path = req.file.filename;
-
-        const sql = `
-            INSERT INTO candidate_photo
-            (
-                ttr_id,
-                photo_path
-            )
-            VALUES (?, ?)
-        `;
-
-        db.query(
-            sql,
-            [ttr_id, photo_path],
-            (err) => {
-
-                if(err){
-                    console.log(err);
-
-                    return res.status(500).json({
-                        message:
-                        "Photo Upload Failed"
-                    });
-                }
-
-                res.json({
-                    message:
-                    "Photo Uploaded Successfully"
-                });
-
-            }
-        );
-
-    }
-);
-
 app.post("/register", (req, res) => {
 
     const {
@@ -335,6 +174,293 @@ app.post("/register", (req, res) => {
 
 });
 
+app.get("/candidates", (req, res) => {
+
+    const sql = `
+    SELECT
+    c.ttr_id,
+    c.full_name,
+    c.branch,
+    c.year_of_study,
+    c.email,
+    c.phone,
+    GROUP_CONCAT(v.vertical_name SEPARATOR ', ') AS vertical_name,
+    c.final_status
+
+FROM candidate c
+
+LEFT JOIN candidate_vertical cv
+ON c.ttr_id = cv.ttr_id
+
+LEFT JOIN vertical v
+ON cv.vertical_id = v.vertical_id
+
+GROUP BY
+    c.ttr_id,
+    c.full_name,
+    c.branch,
+    c.year_of_study,
+    c.email,
+    c.phone,
+    c.final_status
+
+ORDER BY c.ttr_id;
+    `;
+
+    db.query(sql, (err, result) => {
+
+        if(err){
+
+            console.log(err);
+
+            return res.status(500).json({
+                message:"Database Error"
+            });
+
+        }
+
+        res.json(result);
+
+    });
+
+});
+
+app.get("/upload/candidates", (req, res) => {
+
+    const sql = `
+
+    SELECT
+
+    c.ttr_id,
+
+    c.full_name,
+
+    GROUP_CONCAT(v.vertical_name SEPARATOR ', ') AS vertical_name,
+
+    MAX(cp.photo_path) AS photo_path
+
+FROM candidate c
+
+LEFT JOIN candidate_vertical cv
+ON c.ttr_id = cv.ttr_id
+
+LEFT JOIN vertical v
+ON cv.vertical_id = v.vertical_id
+
+LEFT JOIN candidate_photo cp
+ON c.ttr_id = cp.ttr_id
+
+GROUP BY
+
+    c.ttr_id,
+
+    c.full_name
+
+ORDER BY
+
+    c.ttr_id;
+
+    `;
+
+    db.query(sql,(err,result)=>{
+
+        if(err){
+
+            console.log(err);
+
+            return res.status(500).json({
+                message:"Database Error"
+            });
+
+        }
+
+        res.json(result);
+
+    });
+
+});
+
+app.get("/evaluation/candidates", (req, res) => {
+
+    const sql = `
+
+SELECT
+
+    c.ttr_id,
+    c.full_name,
+
+    cv.vertical_id,
+
+    v.vertical_name,
+
+    MAX(cp.photo_path) AS photo_path,
+
+    e.score,
+
+    e.remark,
+
+    COALESCE(e.decision,'Pending') AS decision
+
+FROM candidate c
+
+INNER JOIN candidate_vertical cv
+ON c.ttr_id = cv.ttr_id
+
+INNER JOIN vertical v
+ON cv.vertical_id = v.vertical_id
+
+LEFT JOIN candidate_photo cp
+ON c.ttr_id = cp.ttr_id
+
+LEFT JOIN evaluation e
+ON c.ttr_id = e.ttr_id
+AND cv.vertical_id = e.vertical_id
+AND e.round_no = 1
+
+GROUP BY
+
+    c.ttr_id,
+    c.full_name,
+    cv.vertical_id,
+    v.vertical_name,
+    e.score,
+    e.remark,
+    e.decision
+
+ORDER BY
+
+    c.ttr_id;
+
+`;
+
+    db.query(sql, (err, result) => {
+
+        if(err){
+
+            console.log(err);
+
+            return res.status(500).json({
+                message:"Database Error"
+            });
+
+        }
+
+        res.json(result);
+
+    });
+
+});
+
+app.get("/candidate/:ttr_id", (req, res) => {
+
+    const ttr_id = req.params.ttr_id;
+
+    const sql = `
+    SELECT
+        c.ttr_id,
+        c.full_name,
+        c.branch,
+        c.year_of_study,
+        c.email,
+        c.phone,
+
+        MAX(cp.photo_path) AS photo_path,
+
+        GROUP_CONCAT(v.vertical_name) AS verticals
+
+    FROM candidate c
+
+    LEFT JOIN candidate_photo cp
+    ON c.ttr_id = cp.ttr_id
+
+    LEFT JOIN candidate_vertical cv
+    ON c.ttr_id = cv.ttr_id
+
+    LEFT JOIN vertical v
+    ON cv.vertical_id = v.vertical_id
+
+    WHERE c.ttr_id = ?
+
+    GROUP BY
+        c.ttr_id,
+        c.full_name,
+        c.branch,
+        c.year_of_study,
+        c.email,
+        c.phone
+`;
+
+    db.query(sql, [ttr_id], (err, result) => {
+
+        if (err) {
+            console.log(err);
+
+            return res.status(500).json({
+                message: "Database Error"
+            });
+        }
+
+        if (result.length === 0) {
+            return res.status(404).json({
+                message: "Candidate Not Found"
+            });
+        }
+
+        res.json(result[0]);
+
+    });
+
+});
+
+app.post(
+    "/upload-photo/:ttr_id",
+    upload.single("photo"),
+    (req, res) => {
+
+        const ttr_id = req.params.ttr_id;
+
+        if (!req.file) {
+            return res.status(400).json({
+                message: "No photo uploaded"
+            });
+        }
+        
+        const photo_path = req.file.filename;
+
+        const sql = `
+            INSERT INTO candidate_photo
+            (
+                ttr_id,
+                photo_path
+            )
+            VALUES (?, ?)
+        `;
+
+        db.query(
+            sql,
+            [ttr_id, photo_path],
+            (err) => {
+
+                if(err){
+                    console.log(err);
+
+                    return res.status(500).json({
+                        message:
+                        "Photo Upload Failed"
+                    });
+                }
+
+                res.json({
+                    message:
+                    "Photo Uploaded Successfully"
+                });
+
+            }
+        );
+
+    }
+);
+
 app.post("/evaluation", (req, res) => {
 
     const {
@@ -385,6 +511,206 @@ app.post("/evaluation", (req, res) => {
             });
 
         }
+    );
+
+});
+
+app.put("/evaluation", (req, res) => {
+
+    const {
+
+        ttr_id,
+        vertical_id,
+        round_no,
+        score,
+        remark,
+        decision
+
+    } = req.body;
+
+    // Check if evaluation already exists
+
+    const checkSql = `
+
+        SELECT *
+
+        FROM evaluation
+
+        WHERE
+            ttr_id = ?
+            AND vertical_id = ?
+            AND round_no = ?
+
+    `;
+
+    db.query(
+
+        checkSql,
+
+        [ttr_id, vertical_id, round_no],
+
+        (err, result) => {
+
+            if (err) {
+
+                console.log(err);
+
+                return res.status(500).json({
+                    message: "Database Error"
+                });
+
+            }
+
+            // -----------------------------
+            // UPDATE
+            // -----------------------------
+
+            if (result.length > 0) {
+
+                const updateSql = `
+
+                    UPDATE evaluation
+
+                    SET
+
+                        score = ?,
+
+                        remark = ?,
+
+                        decision = ?
+
+                    WHERE
+
+                        ttr_id = ?
+
+                        AND vertical_id = ?
+
+                        AND round_no = ?
+
+                `;
+
+                db.query(
+
+                    updateSql,
+
+                    [
+
+                        score,
+
+                        remark,
+
+                        decision,
+
+                        ttr_id,
+
+                        vertical_id,
+
+                        round_no
+
+                    ],
+
+                    (err) => {
+
+                        if (err) {
+
+                            console.log(err);
+
+                            return res.status(500).json({
+                                message: "Update Failed"
+                            });
+
+                        }
+
+                        return res.json({
+
+                            message: "Evaluation Updated"
+
+                        });
+
+                    }
+
+                );
+
+            }
+
+            // -----------------------------
+            // INSERT
+            // -----------------------------
+
+            else {
+
+                const insertSql = `
+
+                    INSERT INTO evaluation
+
+                    (
+
+                        ttr_id,
+
+                        vertical_id,
+
+                        round_no,
+
+                        score,
+
+                        remark,
+
+                        decision
+
+                    )
+
+                    VALUES
+
+                    (?, ?, ?, ?, ?, ?)
+
+                `;
+
+                db.query(
+
+                    insertSql,
+
+                    [
+
+                        ttr_id,
+
+                        vertical_id,
+
+                        round_no,
+
+                        score,
+
+                        remark,
+
+                        decision
+
+                    ],
+
+                    (err) => {
+
+                        if (err) {
+
+                            console.log(err);
+
+                            return res.status(500).json({
+                                message: "Insert Failed"
+                            });
+
+                        }
+
+                        return res.json({
+
+                            message: "Evaluation Saved"
+
+                        });
+
+                    }
+
+                );
+
+            }
+
+        }
+
     );
 
 });

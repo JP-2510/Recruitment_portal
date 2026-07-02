@@ -4,6 +4,7 @@ import Topbar from "../components/Topbar";
 import "../styles/dashboard.css";
 import CandidateList from "./CandidateList";
 import Evaluation from "./Evaluation";
+import UploadPhotos from "./UploadPhotos";
 
 function Dashboard() {
 
@@ -85,6 +86,12 @@ function Dashboard() {
 {activePage === "evaluation" && (
 
 <Evaluation />
+
+)}
+
+{activePage === "uploadPhotos" && (
+
+<UploadPhotos />
 
 )}
 
