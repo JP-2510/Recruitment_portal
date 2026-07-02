@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import "../styles/uploadPhotos.css";
 
@@ -7,6 +7,21 @@ function UploadPhotos() {
     const [search, setSearch] = useState("");
 
     const [candidates, setCandidates] = useState([]);
+
+    const fileInputRef = useRef(null);
+
+    const [selectedCandidate, setSelectedCandidate] = useState(null);
+
+    const [preview,setPreview]=useState(null);
+
+
+    const openImage=(photo)=>{
+
+        console.log(photo);
+        setPreview(photo);
+    
+    };
+ 
 
     useEffect(() => {
 
@@ -32,6 +47,85 @@ function UploadPhotos() {
 
         }
 
+    };
+
+    const deletePhoto = async (ttr_id) => {
+
+        try{
+    
+            await axios.delete(
+    
+                `http://localhost:3000/upload-photo/${ttr_id}`
+    
+            );
+    
+            fetchCandidates();
+    
+        }
+    
+        catch(err){
+    
+            console.log(err);
+    
+        }
+    
+    };
+
+    const handleUploadClick = (candidate) => {
+
+        setSelectedCandidate(candidate);
+    
+        fileInputRef.current.click();
+    
+    };
+    
+    const handleFileSelect = async (e) => {
+
+        const file = e.target.files[0];
+    
+        if (!file || !selectedCandidate) return;
+    
+        const formData = new FormData();
+    
+        formData.append("photo", file);
+    
+        try {
+    
+            await axios.post(
+    
+                `http://localhost:3000/upload-photo/${selectedCandidate.ttr_id}`,
+    
+                formData,
+    
+                {
+    
+                    headers: {
+    
+                        "Content-Type": "multipart/form-data"
+    
+                    }
+    
+                }
+    
+            );
+    
+            // Refresh table
+            await fetchCandidates();
+    
+            // Clear selected candidate
+            setSelectedCandidate(null);
+    
+            // Reset input
+            e.target.value = "";
+    
+        }
+    
+        catch (err) {
+    
+            console.log(err);
+    
+        }
+    
     };
 
     const filteredCandidates = candidates.filter(candidate =>
@@ -110,29 +204,31 @@ function UploadPhotos() {
 
 {
 
-candidate.photo_path ?
+    candidate.photo_path ?
 
-(
+    (
 
-<img
+        <button
 
-src={`http://localhost:3000/${candidate.photo_path}`}
+            className="view-btn"
 
-alt="Candidate"
+            onClick={() => openImage(candidate.photo_path)}
 
-className="photo-thumb"
+        >
 
-/>
+            👁 View
 
-)
+        </button>
 
-:
+    )
 
-(
+    :
 
-<span>No Photo</span>
+    (
 
-)
+        <span>No Photo</span>
+
+    )
 
 }
 
@@ -166,7 +262,9 @@ candidate.photo_path
 
 <td>
 
-<button>
+<button
+onClick={()=>handleUploadClick(candidate)}
+>
 
 {
 
@@ -174,15 +272,37 @@ candidate.photo_path
 
 ?
 
-"Replace"
+"🔄 Replace"
 
 :
 
-"Upload"
+"📤 Upload"
 
 }
 
 </button>
+
+{
+
+candidate.photo_path &&
+
+<button
+
+className="delete-btn"
+
+onClick={()=>
+
+deletePhoto(candidate.ttr_id)
+
+}
+
+>
+
+🗑 Delete
+
+</button>
+
+}
 
 </td>
 
@@ -195,6 +315,65 @@ candidate.photo_path
                 </tbody>
 
             </table>
+
+            <input
+
+    type="file"
+
+    accept="image/*"
+
+    capture="environment"
+
+    ref={fileInputRef}
+
+    style={{ display: "none" }}
+
+    onChange={handleFileSelect}
+
+/>
+
+
+
+{
+
+    preview && (
+    
+    <div
+    className="preview-overlay"
+    onClick={() => setPreview(null)}
+    >
+    
+    <div
+    className="preview-box"
+    onClick={(e)=>e.stopPropagation()}
+    >
+    
+    <img
+    
+    src={`http://localhost:3000/${preview}`}
+    
+    alt="Preview"
+    
+    />
+    
+    <button
+    className="close-preview"
+    onClick={()=>setPreview(null)}
+    >
+    
+    ✖ Close
+    
+    </button>
+    
+    </div>
+    
+    </div>
+    
+    )
+    
+    }
+
+
 
         </div>
 

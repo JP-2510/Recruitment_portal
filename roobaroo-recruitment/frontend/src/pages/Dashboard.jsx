@@ -5,6 +5,7 @@ import "../styles/dashboard.css";
 import CandidateList from "./CandidateList";
 import Evaluation from "./Evaluation";
 import UploadPhotos from "./UploadPhotos";
+import Results from "./Results";
 
 function Dashboard() {
 
@@ -94,6 +95,14 @@ function Dashboard() {
 <UploadPhotos />
 
 )}
+
+{
+    activePage === "results" && (
+
+        <Results />
+
+    )
+}
 
 </div>
 

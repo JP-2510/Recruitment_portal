@@ -105,3 +105,81 @@ button:hover{
     font-weight:600;
 
 }
+
+.view-btn{
+
+    background:#1976d2;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.view-btn:hover{
+
+    background:#1565c0;
+
+}
+
+.preview-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.75);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:999;
+
+}
+
+.preview-box{
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:12px;
+
+    max-width:90vw;
+
+    max-height:90vh;
+
+    text-align:center;
+
+}
+
+.preview-box img{
+
+    max-width:700px;
+
+    max-height:75vh;
+
+    border-radius:10px;
+
+}
+
+.close-preview{
+
+    margin-top:20px;
+
+    background:#D4AF37;
+
+    color:white;
+
+    border:none;
+
+    padding:10px 25px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+}

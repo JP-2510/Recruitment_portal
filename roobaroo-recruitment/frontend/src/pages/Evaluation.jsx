@@ -13,8 +13,10 @@ function Evaluation() {
     const member = JSON.parse(localStorage.getItem("member"));
 
     const [search, setSearch] = useState("");
+    const [preview, setPreview] = useState(null);
     const [verticalFilter, setVerticalFilter] = useState("All");
     const [decisionFilter, setDecisionFilter] = useState("All");
+    const [round, setRound] = useState(1);
 
     // Dummy Data (Replace with backend later)
 
@@ -24,17 +26,17 @@ function Evaluation() {
 
         fetchCandidates();
     
-    }, []);
+    }, [round]);
     
     const fetchCandidates = async () => {
     
         try{
     
             const res = await axios.get(
-    
-                "http://localhost:3000/evaluation/candidates"
-    
-            );
+
+                `http://localhost:3000/evaluation/candidates?round=${round}`
+                
+                )
     
             setCandidates(res.data);
     
@@ -191,7 +193,7 @@ function Evaluation() {
     
                     vertical_id: candidate.vertical_id,
     
-                    round_no: 1,
+                    round_no: round,
     
                     score: candidate.score,
     
@@ -214,6 +216,12 @@ function Evaluation() {
             alert("Failed to Save Evaluation");
     
         }
+    
+    };
+
+    const openImage = (photo) => {
+
+        setPreview(photo);
     
     };
 
@@ -307,6 +315,7 @@ function Evaluation() {
 
                 >
 
+
                     <option>All</option>
                     <option>Pending</option>
                     <option>Selected</option>
@@ -314,6 +323,23 @@ function Evaluation() {
                     <option>Discuss</option>
 
                 </select>
+
+                <select
+
+value={round}
+
+onChange={(e) => setRound(Number(e.target.value))}
+
+>
+
+<option value={1}>Round 1</option>
+
+<option value={2}>Round 2</option>
+
+<option value={3}>Round 3</option>
+
+</select>
+
 
             </div>
 
@@ -395,17 +421,41 @@ function Evaluation() {
 
                                     </td>
 
-                                    <td>
+                                   <td>
+                                   {
 
-                                        <button
-                                            className="icon-btn"
-                                        >
+candidate.photo_path ?
 
-                                            <FaEye />
+(
 
-                                        </button>
+<button
 
-                                    </td>
+className="icon-btn"
+
+onClick={() => openImage(candidate.photo_path)}
+
+>
+
+<FaEye />
+
+</button>
+
+)
+
+:
+
+(
+
+<span className="no-photo">
+
+No Photo
+
+</span>
+
+)
+
+}
+                                   </td>
 
                                     <td>
 
@@ -523,21 +573,27 @@ function Evaluation() {
 
                                     <td>
 
-    <button
+                                    <button
+    className="save-btn"
+    onClick={() => saveEvaluation(candidate)}
+>
 
-        className="save-btn"
+{
+candidate.score !== null ||
+candidate.remark ||
+(candidate.decision && candidate.decision !== "Pending")
 
-        onClick={() =>
+?
 
-            saveEvaluation(candidate)
+"✏️ Update"
 
-        }
+:
 
-    >
+"💾 Save"
 
-        💾 Save
+}
 
-    </button>
+</button>
 
 </td>
 
@@ -552,6 +608,54 @@ function Evaluation() {
                 </table>
 
             </div>
+
+            {
+
+preview && (
+
+<div
+
+className="preview-overlay"
+
+onClick={() => setPreview(null)}
+
+>
+
+<div
+
+className="preview-box"
+
+onClick={(e) => e.stopPropagation()}
+
+>
+
+<img
+
+src={`http://localhost:3000/${preview}`}
+
+alt="Candidate"
+
+/>
+
+<button
+
+className="close-preview"
+
+onClick={() => setPreview(null)}
+
+>
+
+✖ Close
+
+</button>
+
+</div>
+
+</div>
+
+)
+
+}
 
         </div>
 

@@ -62,10 +62,13 @@ const menuItems = [
         roles: ["Coordinator"]
     },
     {
-        id: "selection",
-        title: "Final Selection",
+        id: "results",
+        title: "Results",
         icon: FaAward,
-        roles: ["Head"]
+        roles: [
+            "Coordinator",
+            "Head"
+        ]
     }
 ];
 

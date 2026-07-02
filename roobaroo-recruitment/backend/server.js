@@ -2,7 +2,13 @@ const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 const memberRoutes = require("./routes/memberRoutes");
+
+if (!fs.existsSync("uploads")) {
+    fs.mkdirSync("uploads");
+}
+
 
 
 const storage = multer.diskStorage({
@@ -13,13 +19,14 @@ const storage = multer.diskStorage({
 
     filename: (req, file, cb) => {
 
-        const uniqueName =
-            Date.now() +
-            path.extname(file.originalname);
+        const extension = path.extname(file.originalname);
 
-        cb(null, uniqueName);
+        cb(null, Date.now() + extension);
+
     }
+
 });
+
 
 const upload = multer({ storage });
 
@@ -29,6 +36,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static("uploads"));
 app.use("/member", memberRoutes);
 app.use("/uploads",
     express.static("uploads")
@@ -235,7 +243,7 @@ app.get("/upload/candidates", (req, res) => {
 
     c.full_name,
 
-    GROUP_CONCAT(v.vertical_name SEPARATOR ', ') AS vertical_name,
+    GROUP_CONCAT(DISTINCT v.vertical_name SEPARATOR ', ') AS vertical_name,
 
     MAX(cp.photo_path) AS photo_path
 
@@ -282,65 +290,99 @@ ORDER BY
 
 app.get("/evaluation/candidates", (req, res) => {
 
-    const sql = `
+    const round = Number(req.query.round || 1);
 
-SELECT
+    let sql = `
+    
+    SELECT
 
-    c.ttr_id,
-    c.full_name,
+        c.ttr_id,
+        c.full_name,
 
-    cv.vertical_id,
+        cv.vertical_id,
 
-    v.vertical_name,
+        GROUP_CONCAT(DISTINCT v.vertical_name SEPARATOR ', ') AS vertical_name,
 
-    MAX(cp.photo_path) AS photo_path,
+        MAX(cp.photo_path) AS photo_path,
 
-    e.score,
+        e.score,
+        e.remark,
 
-    e.remark,
+        COALESCE(e.decision, 'Pending') AS decision
 
-    COALESCE(e.decision,'Pending') AS decision
+    FROM candidate c
 
-FROM candidate c
+    INNER JOIN candidate_vertical cv
+    ON c.ttr_id = cv.ttr_id
 
-INNER JOIN candidate_vertical cv
-ON c.ttr_id = cv.ttr_id
+    INNER JOIN vertical v
+    ON cv.vertical_id = v.vertical_id
 
-INNER JOIN vertical v
-ON cv.vertical_id = v.vertical_id
+    LEFT JOIN candidate_photo cp
+    ON c.ttr_id = cp.ttr_id
 
-LEFT JOIN candidate_photo cp
-ON c.ttr_id = cp.ttr_id
+    LEFT JOIN evaluation e
+    ON c.ttr_id = e.ttr_id
+    AND cv.vertical_id = e.vertical_id
+    AND e.round_no = ?
 
-LEFT JOIN evaluation e
-ON c.ttr_id = e.ttr_id
-AND cv.vertical_id = e.vertical_id
-AND e.round_no = 1
+    `;
 
-GROUP BY
+    const values = [round];
 
-    c.ttr_id,
-    c.full_name,
-    cv.vertical_id,
-    v.vertical_name,
-    e.score,
-    e.remark,
-    e.decision
+    if (round > 1) {
 
-ORDER BY
+        sql += `
 
-    c.ttr_id;
+        WHERE EXISTS (
 
-`;
+            SELECT 1
 
-    db.query(sql, (err, result) => {
+            FROM evaluation prev
 
-        if(err){
+            WHERE
+
+                prev.ttr_id = c.ttr_id
+
+                AND prev.vertical_id = cv.vertical_id
+
+                AND prev.round_no = ?
+
+                AND prev.decision = 'Selected'
+
+        )
+
+        `;
+
+        values.push(round - 1);
+
+    }
+
+    sql += `
+
+    GROUP BY
+
+        c.ttr_id,
+        c.full_name,
+        cv.vertical_id,
+        e.score,
+        e.remark,
+        e.decision
+
+    ORDER BY
+
+        c.ttr_id;
+
+    `;
+
+    db.query(sql, values, (err, result) => {
+
+        if (err) {
 
             console.log(err);
 
             return res.status(500).json({
-                message:"Database Error"
+                message: "Database Error"
             });
 
         }
@@ -348,6 +390,60 @@ ORDER BY
         res.json(result);
 
     });
+
+});
+
+app.put("/evaluation/reset", (req, res) => {
+
+    const { ttr_id, vertical_id, round_no } = req.body;
+
+    const sql = `
+
+        UPDATE evaluation
+
+        SET
+
+            score = NULL,
+
+            remark = NULL,
+
+            decision = NULL
+
+        WHERE
+
+            ttr_id = ?
+
+            AND vertical_id = ?
+
+            AND round_no = ?
+
+    `;
+
+    db.query(
+
+        sql,
+
+        [ttr_id, vertical_id, round_no],
+
+        (err) => {
+
+            if (err) {
+
+                console.log(err);
+
+                return res.status(500).json({
+                    message: "Database Error"
+                });
+
+            }
+
+            res.json({
+                message: "Evaluation Reset Successfully"
+            });
+
+        }
+
+    );
 
 });
 
@@ -412,54 +508,110 @@ app.get("/candidate/:ttr_id", (req, res) => {
 
 });
 
-app.post(
-    "/upload-photo/:ttr_id",
-    upload.single("photo"),
-    (req, res) => {
+app.get("/results/candidates/:round", (req, res) => {
 
-        const ttr_id = req.params.ttr_id;
+    const round = req.params.round;
 
-        if (!req.file) {
-            return res.status(400).json({
-                message: "No photo uploaded"
+    const sql = `
+
+    SELECT
+
+        c.ttr_id,
+
+        c.full_name,
+
+        GROUP_CONCAT(DISTINCT v.vertical_name SEPARATOR ', ') AS vertical_name,
+
+        e.decision
+
+    FROM evaluation e
+
+    INNER JOIN candidate c
+    ON e.ttr_id = c.ttr_id
+
+    INNER JOIN candidate_vertical cv
+    ON c.ttr_id = cv.ttr_id
+
+    INNER JOIN vertical v
+    ON cv.vertical_id = v.vertical_id
+
+    WHERE
+
+        e.round_no = ?
+
+        AND e.decision = 'Selected'
+
+    GROUP BY
+
+        c.ttr_id,
+        c.full_name,
+        e.decision
+
+    ORDER BY
+
+        c.ttr_id;
+
+    `;
+
+    db.query(sql,[round],(err,result)=>{
+
+        if(err){
+
+            console.log(err);
+
+            return res.status(500).json({
+                message:"Database Error"
             });
+
         }
-        
-        const photo_path = req.file.filename;
 
-        const sql = `
-            INSERT INTO candidate_photo
-            (
-                ttr_id,
-                photo_path
-            )
-            VALUES (?, ?)
-        `;
+        res.json(result);
 
-        db.query(
-            sql,
-            [ttr_id, photo_path],
-            (err) => {
+    });
 
-                if(err){
-                    console.log(err);
+});
 
-                    return res.status(500).json({
-                        message:
-                        "Photo Upload Failed"
-                    });
-                }
+app.get("/results/summary/:round", (req, res) => {
 
-                res.json({
-                    message:
-                    "Photo Uploaded Successfully"
-                });
+    const round = req.params.round;
 
-            }
-        );
+    const sql = `
 
-    }
-);
+    SELECT
+
+        COUNT(*) AS evaluated,
+
+        SUM(decision='Selected') AS selected,
+
+        SUM(decision='Discuss') AS discuss,
+
+        SUM(decision='Rejected') AS rejected,
+
+        SUM(decision='Pending') AS pending
+
+    FROM evaluation
+
+    WHERE round_no = ?;
+
+    `;
+
+    db.query(sql,[round],(err,result)=>{
+
+        if(err){
+
+            console.log(err);
+
+            return res.status(500).json({
+                message:"Database Error"
+            });
+
+        }
+
+        res.json(result[0]);
+
+    });
+
+});
 
 app.post("/evaluation", (req, res) => {
 
@@ -870,6 +1022,203 @@ app.post("/mentor-observation", (req, res) => {
             });
         }
     );
+
+});
+
+app.post(
+    "/upload-photo/:ttr_id",
+    upload.single("photo"),
+    (req, res) => {
+
+        const { ttr_id } = req.params;
+
+        const photo_path = "uploads/" + req.file.filename;
+
+        const checkSql = `
+        SELECT *
+        FROM candidate_photo
+        WHERE ttr_id = ?
+        `;
+
+        db.query(checkSql, [ttr_id], (err, result) => {
+
+            if (err) {
+
+                console.log(err);
+
+                return res.status(500).json({
+                    message: "Database Error"
+                });
+
+            }
+
+            // Photo already exists
+            // Photo already exists
+if (result.length > 0) {
+
+    const oldPhoto = result[0].photo_path;
+
+if (oldPhoto) {
+
+    const oldFilePath = path.join(__dirname, oldPhoto);
+
+    if (fs.existsSync(oldFilePath)) {
+
+        fs.unlinkSync(oldFilePath);
+
+    }
+
+}
+
+    const updateSql = `
+
+        UPDATE candidate_photo
+
+        SET photo_path = ?
+
+        WHERE ttr_id = ?
+
+    `;
+
+    db.query(
+
+        updateSql,
+
+        [photo_path, ttr_id],
+
+        (err) => {
+
+            if (err) {
+
+                console.log(err);
+
+                return res.status(500).json({
+                    message: "Update Failed"
+                });
+
+            }
+
+            return res.json({
+
+                message: "Photo Updated"
+
+            });
+
+        }
+
+    );
+
+}
+
+            // First Upload
+            else {
+
+                const insertSql = `
+                INSERT INTO candidate_photo
+                (ttr_id, photo_path)
+                VALUES (?, ?)
+                `;
+
+                db.query(
+                    insertSql,
+                    [ttr_id, photo_path],
+                    (err) => {
+
+                        if (err) {
+
+                            console.log(err);
+
+                            return res.status(500).json({
+                                message: "Upload Failed"
+                            });
+
+                        }
+
+                        return res.json({
+                            message: "Photo Uploaded"
+                        });
+
+                    }
+                );
+
+            }
+
+        });
+
+    }
+);
+
+app.delete("/upload-photo/:ttr_id",(req,res)=>{
+
+    const { ttr_id } = req.params;
+
+    const sql = `
+        SELECT photo_path
+        FROM candidate_photo
+        WHERE ttr_id = ?
+    `;
+
+    db.query(sql,[ttr_id],(err,result)=>{
+
+        if(err){
+
+            console.log(err);
+
+            return res.status(500).json({
+                message:"Database Error"
+            });
+
+        }
+
+        if(result.length===0){
+
+            return res.status(404).json({
+                message:"Photo Not Found"
+            });
+
+        }
+
+        const photoPath=result[0].photo_path;
+
+        if(photoPath && fs.existsSync(photoPath)){
+
+            const filePath = path.join(__dirname, photoPath);
+
+            if (fs.existsSync(filePath)) {
+            
+                fs.unlinkSync(filePath);
+            
+            }
+
+        }
+
+        db.query(
+
+            "DELETE FROM candidate_photo WHERE ttr_id=?",
+
+            [ttr_id],
+
+            (err)=>{
+
+                if(err){
+
+                    console.log(err);
+
+                    return res.status(500).json({
+                        message:"Delete Failed"
+                    });
+
+                }
+
+                res.json({
+                    message:"Photo Deleted"
+                });
+
+            }
+
+        );
+
+    });
 
 });
 
